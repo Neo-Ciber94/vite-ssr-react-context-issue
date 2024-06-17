@@ -27,7 +27,9 @@ export default defineConfig({
           const code = await loadVirtualModule();
           const result = await esbuild.transform(code, {
             loader: "tsx",
+            jsx: "automatic"
           });
+          console.log(result.code);
 
           return result.code;
         }
@@ -36,10 +38,18 @@ export default defineConfig({
     {
       name: "dev-server",
       configureServer(server) {
-        prepareViteServer(server);
+        // prepareViteServer(server);
 
         return async () => {
-          server.middlewares.use(handleRequest);
+          // server.middlewares.use(handleRequest);
+          server.middlewares.use(async (req, res, next) => {
+            try {
+              const mod = await server.ssrLoadModule("/src/entry.server");
+              await mod.handleRequest(req, res);
+            } catch (e) {
+              next(e);
+            }
+          })
         };
       },
     },
