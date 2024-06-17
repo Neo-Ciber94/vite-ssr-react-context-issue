@@ -30,8 +30,9 @@ export async function handleRequest(
 ) {
   //   const { default: Component } = await import("./app");
 
-  const viteServer = getViteServer();
-  const { default: Component } = await viteServer.ssrLoadModule("virtual:app");
+  // const viteServer = getViteServer();
+  // const { default: Component } = await viteServer.ssrLoadModule("virtual:app");
+  const { default: Component } = await import("virtual:app" as string);
 
   const { pipe } = renderToPipeableStream(<ServerEntry App={Component} />, {
     bootstrapScripts: [],
